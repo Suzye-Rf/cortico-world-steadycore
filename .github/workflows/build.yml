@@ -1,0 +1,60 @@
+name: build
+
+on:
+  push:
+    branches: [main, master]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --workspace
+
+  binary:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            name: windows-x64
+            file: steadycore.exe
+          - os: ubuntu-latest
+            name: linux-x64
+            file: steadycore
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release -p steadycore-server
+      - uses: actions/upload-artifact@v4
+        with:
+          name: steadycore-${{ matrix.name }}
+          path: target/release/${{ matrix.file }}
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: binary
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+      - name: Flatten and rename
+        run: |
+          mkdir -p out
+          cp dist/steadycore-windows-x64/steadycore.exe out/steadycore-windows-x64.exe
+          cp dist/steadycore-linux-x64/steadycore out/steadycore-linux-x64
+          chmod +x out/steadycore-linux-x64
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: out/*
+          generate_release_notes: true
