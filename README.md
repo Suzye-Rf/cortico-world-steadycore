@@ -69,6 +69,14 @@ POST /v1/backup              备份一份 jsonl
 - **开机快照有预算**：总共封在 2000 token 上下，每块各有各的份额，塞满就去挤后面的块。
 - **端口被占不许 panic**：同端口上坐着别的进程时安静退出，别把正在活的那个弄死。
 
+## 参考
+
+记忆分层、按半衰期衰减、「自我层只追加」这一套框架想法来自
+[memory-brain](https://github.com/peterpoal134/memory-brain)（一个 AstrBot 的长期记忆插件）。
+
+这里只借了思路，没有使用它的任何代码——那是一套 Python 插件，这里是重新设计与实现的 Rust 版本，
+两边的数据结构、接口、落盘方式都不一样。所以本仓库按 MIT 发布，不沿用 memory-brain 的 AGPL。
+
 ## 许可
 
 MIT，全文见 [LICENSE](LICENSE)。
