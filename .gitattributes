@@ -1,0 +1,11 @@
+# 一律按 LF 存，别让 Windows 上的 autocrlf 把整个仓库的换行都改了
+* text=auto eol=lf
+
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+*.exe binary
+*.pdb binary
+*.png binary
+*.jpg binary
