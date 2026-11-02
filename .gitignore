@@ -1,0 +1,21 @@
+# 编译产物
+/target
+**/target
+*.pdb
+
+# 本地数据：日记、备份、日志
+/data
+**/data
+*.log
+
+# 依赖
+node_modules/
+
+# 本机镜像配置（rsproxy 之类，别强加给别人）
+.cargo/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

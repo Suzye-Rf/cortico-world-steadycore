@@ -1,0 +1,135 @@
+{
+  "tools": [
+    {
+      "name": "steady_health",
+      "description": "看稳态核心进程活着没：有没有在跑、连没连上 mongo、记忆多少条、走到哪一步了、tick 多少次。第一次用先跑这个。",
+      "parameters": { "type": "object", "additionalProperties": false, "properties": {} },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_life",
+      "description": "看我现在这一身状态量：精力、困、想说话、闷、好奇、歇够，加上心情和上次干了什么。",
+      "parameters": { "type": "object", "additionalProperties": false, "properties": {} },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_log",
+      "description": "翻我最近干过的事（动作流水），从最近的往前。想不起「我刚才在干嘛」时用。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "limit": { "type": "integer", "description": "要几条，默认 12。" }
+        }
+      },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_tick",
+      "description": "让核心往前走一步（自己挑一个动作）。一般不用手推——定时器会自己走；想看一步的效果、或者刚醒想动一下时用。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "force": { "type": "string", "description": "可选，强制某个动作，比如 idle / roam / note / rest。" }
+        }
+      },
+      "tags": ["act"]
+    },
+    {
+      "name": "steady_decide",
+      "description": "问一句「现在该不该叫模型、为什么」。只读，不记账，也不真叫。",
+      "parameters": { "type": "object", "additionalProperties": false, "properties": {} },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_wake",
+      "description": "看「现在要是叫一次模型，会给它看什么」——那段唤醒包长什么样。只读，不发事件。",
+      "parameters": { "type": "object", "additionalProperties": false, "properties": {} },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_touch",
+      "description": "记一笔「有人跟我说话了」，想说话那条会降下去。别人来找我聊完，顺手记一下。",
+      "parameters": { "type": "object", "additionalProperties": false, "properties": {} },
+      "tags": ["act"]
+    },
+    {
+      "name": "steady_intent",
+      "description": "告诉核心我要做什么：挑一个动作、写个为什么、要不要带一句话。规则层会验，不该做的会直接拒。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": { "type": "string", "description": "动作名，比如 idle / roam / note / read / watch / pause。" },
+          "why": { "type": "string", "description": "为什么做这个。" },
+          "say": { "type": "string", "description": "可选，想说的话。能不写就不写。" }
+        },
+        "required": ["action"]
+      },
+      "tags": ["act"]
+    },
+    {
+      "name": "steady_recall",
+      "description": "在核心的记忆库里找东西：给几个词，按强度挑最像的几条。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": { "type": "string", "description": "找什么，几个词用空格分开。" },
+          "limit": { "type": "integer", "description": "最多几条，默认 5。" }
+        },
+        "required": ["query"]
+      },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_remember",
+      "description": "往核心的记忆库里记一条：事实、偏好、规矩、今天的小事，各按各的速度变淡。撞身份或跟已有的太像会被拦下来，不硬覆盖。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": { "type": "string", "description": "记什么。一句话，写具体的事。" },
+          "kind": { "type": "string", "description": "rule / person / preference / fact / event，默认 fact。" },
+          "scope": { "type": "string", "description": "记忆域，默认 main。" },
+          "importance": { "type": "integer", "description": "多重要 1-5，默认 3。" }
+        },
+        "required": ["text"]
+      },
+      "tags": ["act"]
+    },
+    {
+      "name": "steady_events",
+      "description": "拉核心的 outbox：它往外报的事（tick 走了一步、越过线了、有个产出槽等我填、该叫我了）。给 since 就只拿更新的。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "since": { "type": "integer", "description": "上次拿到的 nextSeq，只回比它大的。默认 0。" },
+          "limit": { "type": "integer", "description": "最多几条，默认 20。" }
+        }
+      },
+      "tags": ["read"]
+    },
+    {
+      "name": "steady_produce",
+      "description": "填一个产出槽：核心干完一件要内容的事会留个空槽，字得我来写。不给 id 就先列出来看。",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "产出槽 id。不给就只列表。" },
+          "text": { "type": "string", "description": "要写进去的那段字。" }
+        }
+      },
+      "tags": ["act"]
+    },
+    {
+      "name": "steady_stats",
+      "description": "看核心记忆库的概况：多少条、各层多少、最旧最新、最弱的那条。",
+      "parameters": { "type": "object", "additionalProperties": false, "properties": {} },
+      "tags": ["read"]
+    }
+  ]
+}

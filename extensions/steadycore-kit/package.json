@@ -1,0 +1,28 @@
+{
+  "name": "cortico-world-steadycore",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "稳态核心 World：把 steadycore 那个常驻进程的 HTTP 接口变成我能直接调的工具——看状态、推一步、问该不该叫、记一条、翻记忆",
+  "license": "MIT",
+  "author": "Suzye-Rf <2869280778@qq.com>",
+  "keywords": [
+    "cortico-world",
+    "cortico",
+    "steadycore",
+    "life"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./src/index.ts",
+  "cortico": {
+    "kind": "world",
+    "api": 6,
+    "describe": "describe.json"
+  },
+  "files": [
+    "src",
+    "describe.json",
+    "README.md"
+  ]
+}
